@@ -3,6 +3,14 @@ name = "ml"
 version = "0.1.0"
 authors = ["Simon Kocher <simonk2004@t-online.de>"]
 
+[lib]
+name = "ml"
+path = "src/lib.rs"
+
+[[bin]]
+name = "ml"
+path = "src/bin/main.rs"
+
 [dependencies]
 reqwest = "*"
 flate2 = "0.2"
@@ -11,5 +19,6 @@ serde_derive = "*"
 bincode = "*"
 serde = "*"
 rand = "*"
+clap = "*"
 
 nalgebra = { version = "0.13.1", features = ["serde-serialize"] }

@@ -5,6 +5,7 @@ use na::{DMatrix, DVector};
 
 use rand::{thread_rng, sample};
 
+use std::fs;
 use std::fs::File;
 use std::io;
 use std::io::Cursor;
@@ -48,6 +49,16 @@ impl LinearModel {
 		let mut cursor = Cursor::new(encoded);
 
 		io::copy(&mut cursor, &mut f).unwrap();
+	}
+
+	pub fn from_file(path: &str) -> Self {
+		let mut f = File::open(path).unwrap();
+		let file_size = fs::metadata(path).unwrap().len();
+
+		let mut encoded = Vec::with_capacity(file_size as usize);
+		io::copy(&mut f, &mut encoded).unwrap();
+
+		deserialize(&encoded[..]).unwrap()
 	}
 
 	/// Compute the network's prediction for @param input
