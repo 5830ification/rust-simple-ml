@@ -16,6 +16,7 @@ mod linear_model;
 use mnist::MnistData;
 use linear_model::LinearModel;
 
+use std::fs::DirBuilder;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 fn main() {
@@ -23,6 +24,9 @@ fn main() {
     let mut model = LinearModel::new(28*28, 10);
 
     println!("Correct percentage: {:.3} %, Eval: {:.3} %", model.eval_correct(&data.training) * 100f32, model.eval_correct(&data.test) * 100f32);
+
+    DirBuilder::new()
+			.create("./checkpoints");
 
     for epoch in 1..50 {
     	for _ in 1..100 {
