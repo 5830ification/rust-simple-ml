@@ -10,21 +10,14 @@ use std::fs::File;
 use std::io;
 use std::io::Cursor;
 
+use common::{sigmoid, sigmoid_prime, Model};
+
 #[derive(Debug, Deserialize, Serialize)]
 pub struct LinearModel {
 	weights: DMatrix<f32>,
 	biases: DVector<f32>
 }
 
-fn sigmoid(x: f32) -> f32 {
-	1f32 / (1f32 + (-x).exp())
-}
-
-fn sigmoid_prime(x: f32) -> f32 {
-	let sx = sigmoid(x);
-	sx * (1f32 - sx)
-}	
- 
 impl LinearModel {
 	
 	/// Create a new linear model, weights and biases are
@@ -59,40 +52,6 @@ impl LinearModel {
 		io::copy(&mut f, &mut encoded).unwrap();
 
 		deserialize(&encoded[..]).unwrap()
-	}
-
-	/// Compute the network's prediction for @param input
-	pub fn predict(&self, input: &DVector<f32>) -> DVector<f32> {
-		let mut res = &self.weights * input + &self.biases;
-		res.apply(|x| sigmoid(x));
-
-		res
-	}
-
-	pub fn eval_cost(&self, data: &MnistSet) -> f32 {
-		let mut acc = 0f32;
-		for sample in data.iter() {
-			let pred = self.predict(&sample.2);
-			let diff = pred - sample.1;
-			acc += diff.dot(&diff);
-		}
-
-		acc / (2f32 * data.image_count() as f32)
-	}
-
-	pub fn eval_correct(&self, data: &MnistSet) -> f32 {
-		let mut correct_count = 0;
-		for sample in data.iter() {
-			let pred = self.predict(&sample.2);
-			let label = sample.0;
-
-			let pred_val = pred.iter().enumerate().max_by(|&(_, x), &(_, b)| x.partial_cmp(b).unwrap()).unwrap().0;
-			if pred_val == label as usize {
-				correct_count += 1;
-			}
-		}
-
-		correct_count as f32 / data.image_count() as f32
 	}
 
 	pub fn backprop(&self, data: (&DVector<f32>, &DVector<f32>)) -> (DMatrix<f32>, DVector<f32>) {
@@ -142,5 +101,15 @@ impl LinearModel {
 
 		self.weights = wprime;
 		self.biases = bprime;
+	}
+}
+
+impl Model for LinearModel {
+	/// Compute the network's prediction for @param input
+	fn predict(&self, input: &DVector<f32>) -> DVector<f32> {
+		let mut res = &self.weights * input + &self.biases;
+		res.apply(|x| sigmoid(x));
+
+		res
 	}
 }

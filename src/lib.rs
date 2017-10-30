@@ -12,3 +12,6 @@ extern crate rand;
 
 pub mod mnist;
 pub mod linear_model;
+pub mod neural_network;
+
+pub mod common;
