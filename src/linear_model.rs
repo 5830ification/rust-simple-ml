@@ -16,11 +16,11 @@ pub struct LinearModel {
 	biases: DVector<f32>
 }
 
-pub fn sigmoid(x: f32) -> f32 {
+fn sigmoid(x: f32) -> f32 {
 	1f32 / (1f32 + (-x).exp())
 }
 
-pub fn sigmoid_prime(x: f32) -> f32 {
+fn sigmoid_prime(x: f32) -> f32 {
 	let sx = sigmoid(x);
 	sx * (1f32 - sx)
 }	
