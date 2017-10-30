@@ -65,8 +65,18 @@ impl LinearModel {
 
 		(&delta*input.transpose(), delta)
 	}
+}
 
-	pub fn gradient_descent(&mut self, lr: f32, data: &MnistSet) {
+impl Model for LinearModel {
+	/// Compute the network's prediction for @param input
+	fn predict(&self, input: &DVector<f32>) -> DVector<f32> {
+		let mut res = &self.weights * input + &self.biases;
+		res.apply(|x| sigmoid(x));
+
+		res
+	}
+
+	fn gradient_descent(&mut self, lr: f32, data: &MnistSet) {
 		let mut nw_acc = DMatrix::<f32>::zeros(self.weights.shape().0, self.weights.shape().1);
 		let mut nb_acc = DVector::<f32>::zeros(self.biases.shape().0);
 
@@ -84,7 +94,7 @@ impl LinearModel {
 		self.biases = bprime;
 	}
 
-	pub fn sgd(&mut self, lr: f32, batch_size: usize, data: &MnistSet) {
+	fn sgd(&mut self, lr: f32, batch_size: usize, data: &MnistSet) {
 		let mut nw_acc = DMatrix::<f32>::zeros(self.weights.shape().0, self.weights.shape().1);
 		let mut nb_acc = DVector::<f32>::zeros(self.biases.shape().0);
 
@@ -101,15 +111,5 @@ impl LinearModel {
 
 		self.weights = wprime;
 		self.biases = bprime;
-	}
-}
-
-impl Model for LinearModel {
-	/// Compute the network's prediction for @param input
-	fn predict(&self, input: &DVector<f32>) -> DVector<f32> {
-		let mut res = &self.weights * input + &self.biases;
-		res.apply(|x| sigmoid(x));
-
-		res
 	}
 }

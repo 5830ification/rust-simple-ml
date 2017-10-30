@@ -13,6 +13,8 @@ pub fn sigmoid_prime(x: f32) -> f32 {
 
 pub trait Model {
 	fn predict(&self, input: &DVector<f32>) -> DVector<f32>;
+	fn gradient_descent(&mut self, lr: f32, data: &MnistSet);
+	fn sgd(&mut self, lr: f32, batch_size: usize, data: &MnistSet);
 
 	fn eval_cost(&self, data: &MnistSet) -> f32 {
 		let mut acc = 0f32;

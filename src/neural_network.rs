@@ -1,6 +1,7 @@
 use na::{DMatrix, DVector};
 
 use common::{sigmoid, sigmoid_prime, Model};
+use mnist::MnistSet;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct NeuralNetwork {
@@ -76,5 +77,13 @@ impl Model for NeuralNetwork {
 		}
 
 		prev_a
+	}
+
+	fn gradient_descent(&mut self, lr: f32, data: &MnistSet) {
+		unimplemented!();
+	}
+
+	fn sgd(&mut self, lr: f32, batch_size: usize, data: &MnistSet) {
+		unimplemented!();
 	}
 }
